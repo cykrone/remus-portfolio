@@ -65,9 +65,6 @@ export function Hero() {
           <span className="eyebrow">
             {profile.role} · {profile.company}
           </span>
-          <span className="eyebrow hidden sm:inline">
-            {profile.location} · GMT+8
-          </span>
         </motion.div>
 
         {/* Name */}
