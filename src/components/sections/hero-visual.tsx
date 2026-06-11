@@ -102,7 +102,8 @@ export function HeroVisual() {
   const counterText = auto
     ? `${count.toLocaleString()} tasks automated · running`
     : `${count.toLocaleString()} task${count === 1 ? "" : "s"} automated`;
-  const counterW = counterText.length * 6.6 + 30;
+  // mono 10.5px + 0.1em tracking ≈ 7.4px/char, plus comfortable side padding
+  const counterW = counterText.length * 7.4 + 40;
 
   return (
     <motion.div
@@ -136,7 +137,10 @@ export function HeroVisual() {
               strokeLinecap="round"
               strokeDasharray="3 53"
               style={{
-                animation: `flow-dash ${hovered === i ? 1.6 : 4.6}s linear infinite`,
+                animationName: "flow-dash",
+                animationDuration: `${hovered === i ? 1.6 : 4.6}s`,
+                animationTimingFunction: "linear",
+                animationIterationCount: "infinite",
                 animationDelay: `${i * -0.7}s`,
                 opacity: 0.9,
               }}
@@ -149,7 +153,10 @@ export function HeroVisual() {
           <g
             key={`n-${i}`}
             style={{
-              animation: `node-bob ${5.5 + (i % 3)}s ease-in-out infinite`,
+              animationName: "node-bob",
+              animationDuration: `${5.5 + (i % 3)}s`,
+              animationTimingFunction: "ease-in-out",
+              animationIterationCount: "infinite",
               animationDelay: `${i * 0.55}s`,
             }}
           >
