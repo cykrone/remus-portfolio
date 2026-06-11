@@ -62,9 +62,6 @@ export function Hero() {
               </span>
             </span>
           )}
-          <span className="eyebrow">
-            {profile.role} · {profile.company}
-          </span>
         </motion.div>
 
         {/* Name */}
