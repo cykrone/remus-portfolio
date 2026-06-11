@@ -263,7 +263,7 @@ export function HeroVisual() {
             letterSpacing="0.22em"
             fill="var(--color-ink-faint)"
           >
-            {auto ? "iPaaS · AUTO" : "iPaaS"}
+            {auto ? "INTEGRATING" : "INTEGRATE"}
           </text>
         </g>
 
