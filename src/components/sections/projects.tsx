@@ -1,5 +1,6 @@
 import { projects } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
+import { TiltCard } from "@/components/motion/tilt-card";
 import { SectionHeading } from "@/components/sections/section-heading";
 
 export function Projects() {
@@ -28,8 +29,9 @@ export function Projects() {
 
       <div className="mt-16 grid gap-6 lg:mt-20 lg:grid-cols-2">
         {projects.map((project, i) => (
-          <Reveal key={project.title} delay={(i % 2) * 0.08}>
-            <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper p-8 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-line-strong hover:shadow-[0_24px_60px_-28px_rgba(28,26,22,0.28)] sm:p-10">
+          <Reveal key={project.title} delay={(i % 2) * 0.08} className="h-full">
+            <TiltCard className="h-full">
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper p-8 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-line-strong hover:shadow-[0_24px_60px_-28px_rgba(28,26,22,0.28)] sm:p-10">
               {/* corner index + arrow */}
               <div className="flex items-start justify-between">
                 <span className="font-mono text-xs uppercase tracking-[0.18em] text-ink-faint">
@@ -91,6 +93,7 @@ export function Projects() {
                 </div>
               </div>
             </article>
+            </TiltCard>
           </Reveal>
         ))}
       </div>

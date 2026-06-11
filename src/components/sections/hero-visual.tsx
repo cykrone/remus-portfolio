@@ -1,15 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 /* ------------------------------------------------------------------ *
  *  Integration constellation — satellite systems wired into a hub,
  *  with current flowing along the lines. A literal picture of iPaaS.
- *  Decorative only (aria-hidden); hidden below lg.
+ *
+ *  Easter egg: click the hub to "automate a task". After five manual
+ *  clicks it gets fed up and automates the clicking itself. Forever.
  * ------------------------------------------------------------------ */
 
 const HUB = { x: 290, y: 290 };
+const AUTO_AT = 5;
 
 const NODES = [
   { x: 80, y: 90, label: "CRM", w: 66 },
@@ -35,8 +38,71 @@ function wirePath(n: { x: number; y: number }) {
   return `M ${n.x} ${n.y} Q ${cx} ${cy} ${HUB.x} ${HUB.y}`;
 }
 
+type Particle = { id: number; dx: number; dy: number };
+
 export function HeroVisual() {
   const reduce = useReducedMotion();
+  const [hovered, setHovered] = React.useState<number | null>(null);
+  const [count, setCount] = React.useState(0);
+  const [auto, setAuto] = React.useState(false);
+  const [toast, setToast] = React.useState(false);
+  const [particles, setParticles] = React.useState<Particle[]>([]);
+  const idRef = React.useRef(0);
+
+  const burst = React.useCallback(
+    (n: number) => {
+      if (reduce) return;
+      setParticles((prev) => {
+        const fresh: Particle[] = Array.from({ length: n }, (_, k) => {
+          const angle =
+            ((idRef.current + k) * 137.5 * Math.PI) / 180; // golden-angle spread
+          const dist = 52 + ((idRef.current + k) % 4) * 14;
+          return {
+            id: ++idRef.current,
+            dx: Math.cos(angle) * dist,
+            dy: Math.sin(angle) * dist,
+          };
+        });
+        return [...prev, ...fresh].slice(-24);
+      });
+    },
+    [reduce]
+  );
+
+  const manualClicks = React.useRef(0);
+
+  const handleHubClick = React.useCallback(() => {
+    setCount((c) => c + 1);
+    burst(6);
+    if (!auto) {
+      manualClicks.current += 1;
+      if (manualClicks.current >= AUTO_AT) {
+        setAuto(true);
+        setToast(true);
+      }
+    }
+  }, [auto, burst]);
+
+  // the punchline: the clicker clicks itself
+  React.useEffect(() => {
+    if (!auto) return;
+    const t = setInterval(() => {
+      setCount((c) => c + 1);
+      burst(2);
+    }, 650);
+    return () => clearInterval(t);
+  }, [auto, burst]);
+
+  React.useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(false), 4200);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  const counterText = auto
+    ? `${count.toLocaleString()} tasks automated · running`
+    : `${count.toLocaleString()} task${count === 1 ? "" : "s"} automated`;
+  const counterW = counterText.length * 6.6 + 30;
 
   return (
     <motion.div
@@ -57,8 +123,11 @@ export function HeroVisual() {
           <g key={`w-${i}`}>
             <path
               d={wirePath(n)}
-              stroke="var(--color-line-strong)"
-              strokeWidth="1"
+              stroke={
+                hovered === i ? "var(--color-flame)" : "var(--color-line-strong)"
+              }
+              strokeWidth={hovered === i ? 1.5 : 1}
+              style={{ transition: "stroke 0.3s, stroke-width 0.3s" }}
             />
             <path
               d={wirePath(n)}
@@ -67,7 +136,7 @@ export function HeroVisual() {
               strokeLinecap="round"
               strokeDasharray="3 53"
               style={{
-                animation: `flow-dash 4.6s linear infinite`,
+                animation: `flow-dash ${hovered === i ? 1.6 : 4.6}s linear infinite`,
                 animationDelay: `${i * -0.7}s`,
                 opacity: 0.9,
               }}
@@ -84,32 +153,76 @@ export function HeroVisual() {
               animationDelay: `${i * 0.55}s`,
             }}
           >
-            <rect
-              x={n.x - n.w / 2}
-              y={n.y - 19}
-              width={n.w}
-              height={38}
-              rx={19}
-              fill="var(--color-paper)"
-              stroke="var(--color-line-strong)"
-            />
-            <circle cx={n.x - n.w / 2 + 16} cy={n.y} r={3} fill="var(--color-flame)" />
-            <text
-              x={n.x + 6}
-              y={n.y + 3.5}
-              textAnchor="middle"
-              fontFamily="var(--font-mono)"
-              fontSize="10.5"
-              letterSpacing="0.14em"
-              fill="var(--color-ink-soft)"
+            <g
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+              style={{
+                pointerEvents: "auto",
+                cursor: "default",
+                transform: hovered === i ? "translateY(-3px)" : "translateY(0)",
+                transition: "transform 0.3s cubic-bezier(0.16,1,0.3,1)",
+              }}
             >
-              {n.label}
-            </text>
+              <rect
+                x={n.x - n.w / 2}
+                y={n.y - 19}
+                width={n.w}
+                height={38}
+                rx={19}
+                fill="var(--color-paper)"
+                stroke={
+                  hovered === i
+                    ? "var(--color-flame)"
+                    : "var(--color-line-strong)"
+                }
+                style={{ transition: "stroke 0.3s" }}
+              />
+              <circle
+                cx={n.x - n.w / 2 + 16}
+                cy={n.y}
+                r={3}
+                fill="var(--color-flame)"
+              />
+              <text
+                x={n.x + 6}
+                y={n.y + 3.5}
+                textAnchor="middle"
+                fontFamily="var(--font-mono)"
+                fontSize="10.5"
+                letterSpacing="0.14em"
+                fill={
+                  hovered === i ? "var(--color-ink)" : "var(--color-ink-soft)"
+                }
+                style={{ transition: "fill 0.3s" }}
+              >
+                {n.label}
+              </text>
+            </g>
           </g>
         ))}
 
-        {/* hub */}
-        <g>
+        {/* click particles */}
+        <AnimatePresence>
+          {particles.map((p) => (
+            <motion.circle
+              key={p.id}
+              cx={HUB.x}
+              cy={HUB.y}
+              r={2.5}
+              fill="var(--color-flame)"
+              initial={{ opacity: 0.9, x: 0, y: 0, scale: 1 }}
+              animate={{ opacity: 0, x: p.dx, y: p.dy, scale: 0.4 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          ))}
+        </AnimatePresence>
+
+        {/* hub — the button */}
+        <g
+          onClick={handleHubClick}
+          style={{ pointerEvents: "auto", cursor: "pointer" }}
+        >
           <circle
             cx={HUB.x}
             cy={HUB.y}
@@ -118,16 +231,20 @@ export function HeroVisual() {
             opacity={0.18}
             style={{
               transformOrigin: `${HUB.x}px ${HUB.y}px`,
-              animation: "hub-pulse 3.2s ease-out infinite",
+              animation: `hub-pulse ${auto ? 1.4 : 3.2}s ease-out infinite`,
             }}
           />
-          <circle
+          <motion.circle
             cx={HUB.x}
             cy={HUB.y}
             r={30}
             fill="var(--color-paper)"
             stroke="var(--color-flame)"
             strokeWidth="1.5"
+            animate={reduce ? undefined : { scale: [1, 0.93, 1] }}
+            key={`hubring-${count}`}
+            transition={{ duration: 0.25 }}
+            style={{ transformOrigin: `${HUB.x}px ${HUB.y}px` }}
           />
           <circle cx={HUB.x} cy={HUB.y} r={9} fill="var(--color-flame)" />
           <text
@@ -139,10 +256,57 @@ export function HeroVisual() {
             letterSpacing="0.22em"
             fill="var(--color-ink-faint)"
           >
-            iPaaS
+            {auto ? "iPaaS · AUTO" : "iPaaS"}
           </text>
         </g>
+
+        {/* tasks-automated counter */}
+        <AnimatePresence>
+          {count > 0 && (
+            <motion.g
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <rect
+                x={HUB.x - counterW / 2}
+                y={HUB.y - 78}
+                width={counterW}
+                height={30}
+                rx={15}
+                fill="var(--color-ink)"
+              />
+              <text
+                x={HUB.x}
+                y={HUB.y - 59}
+                textAnchor="middle"
+                fontFamily="var(--font-mono)"
+                fontSize="10.5"
+                letterSpacing="0.1em"
+                fill="var(--color-cream)"
+              >
+                {counterText}
+              </text>
+            </motion.g>
+          )}
+        </AnimatePresence>
       </svg>
+
+      {/* the punchline toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute bottom-2 left-1/2 w-max -translate-x-1/2 rounded-full border border-line bg-paper px-5 py-2.5 font-mono text-xs text-ink shadow-[0_8px_30px_-12px_rgba(28,26,22,0.25)]"
+          >
+            Manual clicks detected. Automating that for you&hellip;
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

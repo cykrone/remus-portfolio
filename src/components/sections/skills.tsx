@@ -41,7 +41,7 @@ export function Skills() {
                 <Stagger className="flex flex-wrap content-start gap-2.5 md:col-span-8">
                   {group.skills.map((skill) => (
                     <StaggerItem key={skill}>
-                      <span className="inline-flex cursor-default items-center rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-flame hover:text-flame">
+                      <span className="inline-flex cursor-default items-center rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink transition-all duration-300 hover:-translate-y-1 hover:-rotate-2 hover:border-flame hover:text-flame">
                         {skill}
                       </span>
                     </StaggerItem>

@@ -96,11 +96,13 @@ export function StaggerItem({
 export function WordReveal({
   text,
   className,
+  wordClassName,
   delay = 0,
   stagger = 0.07,
 }: {
   text: string;
   className?: string;
+  wordClassName?: string;
   delay?: number;
   stagger?: number;
 }) {
@@ -108,7 +110,7 @@ export function WordReveal({
   const words = text.split(" ");
 
   if (reduce) {
-    return <span className={className}>{text}</span>;
+    return <span className={cn(className, wordClassName)}>{text}</span>;
   }
 
   return (
@@ -119,7 +121,7 @@ export function WordReveal({
           className="-mb-[0.12em] inline-block overflow-hidden pb-[0.12em] align-bottom"
         >
           <motion.span
-            className="inline-block"
+            className={cn("inline-block", wordClassName)}
             initial={{ y: "110%" }}
             animate={{ y: 0 }}
             transition={{

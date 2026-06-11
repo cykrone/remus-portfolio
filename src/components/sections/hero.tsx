@@ -71,10 +71,10 @@ export function Hero() {
         {/* Name */}
         <h1 className="mt-8 font-display text-[clamp(3.5rem,13vw,12rem)] font-medium leading-[0.92] tracking-[-0.03em] text-ink">
           <span className="block overflow-hidden">
-            <WordReveal text="Remus" delay={0.15} />
+            <WordReveal text="Remus" delay={0.15} wordClassName="wonk-word" />
           </span>
           <span className="block overflow-hidden">
-            <WordReveal text="Chan" delay={0.28} />
+            <WordReveal text="Chan" delay={0.28} wordClassName="wonk-word" />
             <motion.span
               aria-hidden
               initial={reduce ? false : { scale: 0 }}

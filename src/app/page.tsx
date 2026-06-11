@@ -1,4 +1,5 @@
 import { Nav } from "@/components/nav";
+import { EasterEggs } from "@/components/easter-eggs";
 import { Footer } from "@/components/footer";
 import { Marquee } from "@/components/marquee";
 import { Hero } from "@/components/sections/hero";
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <>
       <div className="grain" aria-hidden />
+      <EasterEggs />
       <Nav />
       <main>
         <Hero />

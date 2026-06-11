@@ -65,7 +65,7 @@ export function Nav() {
             className="group flex items-center gap-2.5 text-ink"
             aria-label="Back to top"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-cream transition-colors duration-300 group-hover:bg-flame">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-cream transition-all duration-500 group-hover:rotate-[360deg] group-hover:bg-flame">
               <span className="font-display text-lg leading-none">R</span>
             </span>
             <span className="font-display text-lg tracking-tight">

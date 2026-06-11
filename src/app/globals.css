@@ -184,6 +184,19 @@
     color: transparent;
     -webkit-text-stroke: 1.5px var(--color-line-strong);
   }
+
+  /* Variable-font toy: hovering a name word morphs Fraunces axes */
+  .wonk-word {
+    transition: font-variation-settings 0.6s var(--ease-out-expo);
+  }
+  .wonk-word:hover {
+    font-variation-settings: "opsz" 40, "SOFT" 100, "WONK" 1;
+  }
+}
+
+/* Party mode (Konami code): everything hustles */
+.party .animate-marquee {
+  animation-duration: 7s !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
