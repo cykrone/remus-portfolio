@@ -185,8 +185,11 @@
     -webkit-text-stroke: 1.5px var(--color-line-strong);
   }
 
-  /* Variable-font toy: hovering a name word morphs Fraunces axes */
+  /* Variable-font toy: hovering a name word morphs Fraunces axes.
+     pointer-events restored — the hero text container is none so the
+     constellation behind it stays clickable. */
   .wonk-word {
+    pointer-events: auto;
     transition: font-variation-settings 0.6s var(--ease-out-expo);
   }
   .wonk-word:hover {

@@ -38,9 +38,11 @@ export function Hero() {
       {/* integration constellation — fills the right half at desktop */}
       <HeroVisual />
 
+      {/* pointer-events-none lets clicks fall through to the constellation;
+          interactive children (name words, CTAs) re-enable their own events */}
       <motion.div
         style={{ y, opacity }}
-        className="relative mx-auto w-full max-w-7xl"
+        className="pointer-events-none relative mx-auto w-full max-w-7xl"
       >
         {/* Kicker row */}
         <motion.div
@@ -113,12 +115,12 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-11 flex flex-wrap items-center gap-4"
         >
-          <Magnetic>
+          <Magnetic className="pointer-events-auto">
             <Button asChild variant="flame" size="lg">
               <a href="#projects">See the work</a>
             </Button>
           </Magnetic>
-          <Button asChild variant="outline" size="lg">
+          <Button asChild variant="outline" size="lg" className="pointer-events-auto">
             <a href="#contact">Get in touch</a>
           </Button>
         </motion.div>
