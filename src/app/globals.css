@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ *  Design tokens — warm "premium paper" light theme.
+ *  Cream base · warm ink · a single confident flame accent.
+ *  No dark mode. No purple. No system fonts.
+ * ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand palette */
+  --color-cream: #faf6ed; /* page background */
+  --color-paper: #fffdf8; /* raised surfaces / cards */
+  --color-ink: #1c1a16; /* primary text */
+  --color-ink-soft: #6f6757; /* secondary text */
+  --color-ink-faint: #a59c89; /* meta / hairline labels */
+  --color-flame: #ec4d1a; /* the accent */
+  --color-flame-deep: #c63c11; /* accent hover / pressed */
+  --color-ember: #f9e9df; /* accent tint wash */
+  --color-sand: #efe7d6; /* muted block fill */
+  --color-line: #e6ddca; /* borders / rules */
+  --color-line-strong: #d8ccb2;
+
+  /* Semantic aliases used by UI components */
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-ink);
+  --color-ring: var(--color-flame);
+
+  /* Typography */
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman",
+    serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Keyframes */
+  --animate-marquee: marquee 38s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Base layer
+ * ------------------------------------------------------------------ */
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01", "cv11";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-flame);
+    color: #fff;
+  }
+
+  /* Display headings — Fraunces, high optical size, soft + slightly wonky */
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144, "SOFT" 28, "WONK" 1;
+    letter-spacing: -0.02em;
+    font-weight: 540;
+  }
+
+  /* Eyebrow / mono labels */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    font-weight: 500;
+  }
+
+  /* Thin warm scrollbar */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-cream);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border: 3px solid var(--color-cream);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-faint);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Utilities
+ * ------------------------------------------------------------------ */
+
+@layer utilities {
+  /* Paper-grain texture for the page — extremely subtle */
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* Animated text underline used on inline links */
+  .link-underline {
+    background-image: linear-gradient(var(--color-flame), var(--color-flame));
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s var(--ease-out-expo);
+  }
+  .link-underline:hover {
+    background-size: 100% 1.5px;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Big number outline for section indices / timeline */
+  .numeral-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-line-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
