@@ -1,4 +1,4 @@
-import { posts } from "@/lib/content";
+import { posts, profile } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/sections/section-heading";
 
@@ -47,9 +47,17 @@ export function Writing() {
                 {post.blurb}
               </p>
 
-              <span className="mt-8 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-ink-faint">
-                Draft in progress
-              </span>
+              <a
+                href={`mailto:${profile.email}?subject=${encodeURIComponent(
+                  `Notify me: ${post.title}`
+                )}`}
+                className="mt-8 inline-flex w-fit items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-flame"
+              >
+                Get notified
+                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">
+                  →
+                </span>
+              </a>
             </article>
           </Reveal>
         ))}

@@ -1,7 +1,6 @@
 import { experiences } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/sections/section-heading";
-import { Badge } from "@/components/ui/badge";
 
 export function Experience() {
   return (
@@ -39,11 +38,6 @@ export function Experience() {
                     <span className="font-mono text-sm text-ink">
                       {exp.period}
                     </span>
-                    {exp.current && (
-                      <Badge variant="soft" className="ml-1">
-                        Now
-                      </Badge>
-                    )}
                   </div>
                   <p className="mt-3 pl-[1.4rem] font-mono text-xs uppercase tracking-[0.16em] text-ink-faint">
                     {exp.location}

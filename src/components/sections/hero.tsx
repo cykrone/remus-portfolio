@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
 import { profile } from "@/lib/content";
 import { WordReveal } from "@/components/motion/reveal";
 import { Magnetic } from "@/components/motion/magnetic";
+import { HeroVisual } from "@/components/sections/hero-visual";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
@@ -24,19 +25,22 @@ export function Hero() {
       id="top"
       className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pb-20 pt-32 lg:px-10"
     >
-      {/* soft radial wash behind the type */}
+      {/* soft radial wash behind the constellation */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-[10%] top-[8%] h-[42rem] w-[42rem] rounded-full opacity-70 blur-3xl"
+        className="pointer-events-none absolute -right-[10%] top-[8%] h-[42rem] w-[42rem] rounded-full opacity-60 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(236,77,26,0.10), rgba(236,77,26,0) 62%)",
+            "radial-gradient(circle, rgba(236,77,26,0.09), rgba(236,77,26,0) 62%)",
         }}
       />
 
+      {/* integration constellation — fills the right half at desktop */}
+      <HeroVisual />
+
       <motion.div
         style={{ y, opacity }}
-        className="mx-auto w-full max-w-7xl"
+        className="relative mx-auto w-full max-w-7xl"
       >
         {/* Kicker row */}
         <motion.div

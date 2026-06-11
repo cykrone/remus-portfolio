@@ -17,12 +17,36 @@ export function Nav() {
 
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [active, setActive] = React.useState<string>("");
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
+      // above the first section, nothing is "current"
+      if (window.scrollY < window.innerHeight * 0.5) setActive("");
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scrollspy: highlight the section currently in view
+  React.useEffect(() => {
+    const sections = navLinks
+      .map((l) => document.querySelector<HTMLElement>(l.href))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+        }
+      },
+      { rootMargin: "-35% 0px -55% 0px" }
+    );
+
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -50,16 +74,31 @@ export function Nav() {
           </a>
 
           <ul className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="link-underline rounded-full px-3.5 py-2 text-sm text-ink-soft transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = active === link.href;
+              return (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "link-underline relative rounded-full px-3.5 py-2 text-sm transition-colors",
+                      isActive
+                        ? "text-ink"
+                        : "text-ink-soft hover:text-ink"
+                    )}
+                  >
+                    {link.label}
+                    <span
+                      className={cn(
+                        "absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-flame transition-all duration-300",
+                        isActive ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                      )}
+                    />
+                  </a>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="hidden md:block">
